@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout.html}">
+<head>
+</head>
+<body>
+
+<div class="container" layout:fragment="content">
+    <h1>Welcome!</h1>
+    <p>Here you're gonna see a new feature soon!</p>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit" class="btn btn-outline-primary">Sign Out</button>
+    </form>
+</div>
+</body>
+</html>
