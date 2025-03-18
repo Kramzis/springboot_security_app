@@ -3,7 +3,7 @@ package com.example.springboot_security_app.controller;
 
 import com.example.springboot_security_app.dto.LoginDTO;
 import com.example.springboot_security_app.dto.UserDTO;
-import com.example.springboot_security_app.service.UserServiceImpl;
+import com.example.springboot_security_app.service.base.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -20,15 +20,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/")
 public class AuthController {
 
-    private final UserServiceImpl userServiceImpl;
+    private final UserService userService;
 
-    public AuthController(UserServiceImpl userServiceImpl) {
-        this.userServiceImpl = userServiceImpl;
-    }
-
-    @GetMapping("/home")
-    public String home() {
-        return "home";
+    public AuthController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("/signin")
@@ -58,7 +53,7 @@ public class AuthController {
         }
 
         try {
-            userServiceImpl.saveUser(userDTO);
+            userService.saveUser(userDTO);
             redirectAttributes.addFlashAttribute("success", "Registration successful");
             return "redirect:/signin";
         } catch (IllegalArgumentException e) {

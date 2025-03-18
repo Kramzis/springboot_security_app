@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout.html}">
+<head>
+</head>
+<body>
+
+<div class="container" layout:fragment="content">
+  <h1>Edit Post</h1>
+  <div class="w-50">
+
+    <form method="post" th:action="@{/home/editPost/{postId}(postId=${postId})}" th:object="${post}">
+
+      <div class="mb-3">
+        <label for="titleInput" class="form-label">Title</label>
+        <input type="text" name="title" class="form-control" id="titleInput" th:field="*{title}" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="contentInput" class="form-label">Content</label>
+        <textarea name="content" class="form-control" id="contentInput" th:field="*{content}" rows="5" required></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Update Post</button>
+      <a href="/home" class="btn btn-secondary">Cancel</a>
+    </form>
+
+  </div>
+</div>
+
+</body>
+</html>

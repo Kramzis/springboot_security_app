@@ -14,16 +14,13 @@
         <div th:if="${param.logout}">
             <div class="alert alert-success">You have been logged out.</div>
         </div>
-        <!-- Używamy th:action do wskazania akcji, gdzie dane będą wysyłane -->
         <form method="post" th:action="@{/signin}" th:object="${login}">
             <div class="mb-3">
                 <label for="emailInput" class="form-label">Email address</label>
                 <input type="email" name="email" class="form-control" id="emailInput" th:field="*{email}" required aria-describedby="emailHelp">
                 <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
             </div>
-<!--            <input type="hidden"-->
-<!--                   th:name="${_csrf.parameterName}"-->
-<!--                   th:value="${_csrf.token}" />-->
+
             <div class="mb-3">
                 <label for="passwordInput" class="form-label">Password</label>
                 <input type="password" name="password" class="form-control" id="passwordInput" th:field="*{password}" required>

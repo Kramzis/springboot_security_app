@@ -5,8 +5,36 @@
 <body>
 
 <div class="container" layout:fragment="content">
-    <h1>Welcome!</h1>
-    <p>Here you're gonna see a new feature soon!</p>
+    <h1 class="mb-4">Welcome!</h1>
+
+    <h2>Recent Posts</h2>
+
+    <a href="/home/newPost" class="btn btn-success mb-4">Create Post</a>
+
+    <div th:if="${#lists.isEmpty(posts)}">
+        <p>No posts available</p>
+    </div>
+
+
+    <div th:if="${!#lists.isEmpty(posts)}">
+    <div th:each="post : ${posts}" class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title" th:text="${post.title}"></h5>
+            <p class="card-text" th:text="${post.content}"></p>
+            <p class="text-muted">By <span th:text="${post.createdBy.getUsername()}"></span> on <span th:text="${post.createdAt}"></span></p>
+
+            <!-- Przycisk Edytuj -->
+            <a th:href="@{/home/editPost/{id}(id=${post.id})}" class="btn btn-primary">Edit</a>
+
+            <!-- Przycisk Usuń -->
+            <form th:action="@{/home/deletePost/{id}(id=${post.id})}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this post?');">Delete</button>
+            </form>
+
+        </div>
+    </div>
+    </div>
+
     <form th:action="@{/logout}" method="post">
         <button type="submit" class="btn btn-outline-primary">Sign Out</button>
     </form>

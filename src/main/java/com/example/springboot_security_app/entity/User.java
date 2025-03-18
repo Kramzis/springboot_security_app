@@ -11,12 +11,15 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
+    @Column(unique = true, nullable = false)
     private String username;
+
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
@@ -28,7 +31,7 @@ public class User {
 
     public User() {}
 
-    public User(int id, String username, String email, List<Role> roles, String password) {
+    public User(Integer id, String username, String email, List<Role> roles, String password) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -46,7 +49,7 @@ public class User {
 
     public int getId() { return id; }
 
-    public void setId(int id) { this.id = id; }
+    public void setId(Integer id) { this.id = id; }
 
     public String getEmail() { return email; }
 

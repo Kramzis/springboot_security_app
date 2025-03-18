@@ -8,6 +8,8 @@ import com.example.springboot_security_app.repository.UserRepository;
 import com.example.springboot_security_app.service.base.RoleService;
 import com.example.springboot_security_app.service.base.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,10 +55,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getCurrentUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName();
+
+            User user = userRepository.findByEmail(username);
+            if (user == null) {
+                throw new RuntimeException("User not found");
+            }
+
+            return user;
+        } else {
+             throw new RuntimeException("No authenticated user found");
+        }
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail ( email );
         if(user == null){
-            throw new UsernameNotFoundException ( "Invalid username or password." );
+            throw new UsernameNotFoundException ( "Invalid username or password" );
         }
         return new org.springframework.security.core.userdetails.User(user.getEmail (),user.getPassword (), mapRolesToAuthorities ( user.getRoles () ));
     }
