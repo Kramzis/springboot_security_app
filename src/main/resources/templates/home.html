@@ -5,9 +5,25 @@
 <body>
 
 <div class="container" layout:fragment="content">
-    <h1 class="mb-4">Welcome!</h1>
+    <h1 class="mb-3">Welcome, <span th:text="${user.username}"></span></h1>
 
-    <h2>Recent Posts</h2>
+    <h4>You are logged in</h4>
+
+    <table class="mb-4">
+        <tr>
+            <td>
+                <a th:href="@{/user/editUser/{id}(id=${user.id})}" class="btn btn-primary">Edit</a>
+            </td>
+            <td style="padding-left: 20px;">
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-outline-primary">Sign Out</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+
+
+    <h3>Recent Posts</h3>
 
     <a href="/home/newPost" class="btn btn-success mb-4">Create Post</a>
 
@@ -34,10 +50,6 @@
         </div>
     </div>
     </div>
-
-    <form th:action="@{/logout}" method="post">
-        <button type="submit" class="btn btn-outline-primary">Sign Out</button>
-    </form>
 </div>
 </body>
 </html>

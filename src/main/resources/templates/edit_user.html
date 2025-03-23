@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout.html}">
+<head>
+</head>
+<body>
+
+<div class="container" layout:fragment="content">
+    <h1>Edit profile</h1>
+    <div class="w-50">
+
+        <form method="post" th:action="@{/user/editUser/{userId}(userId=${userId})}" th:object="${user}">
+
+            <div class="mb-3">
+                <label for="usernameInput" class="form-label">Username</label>
+                <input type="text" class="form-control" id="usernameInput" th:field="*{username}" required>
+                <p th:errors="*{username}" class="text-danger"
+                   th:if="${#fields.hasErrors('username')}">
+                </p>
+            </div>
+
+            <div class="mb-3">
+                <label for="emailInput" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="emailInput" th:field="*{email}" required aria-describedby="emailHelp">
+                <p th:errors="*{email}" class="text-danger"
+                   th:if="${#fields.hasErrors('email')}">
+                </p>
+            </div>
+
+            <div class="mb-3">
+                <label for="passwordInput" class="form-label">Password</label>
+                <input type="password" class="form-control" id="passwordInput" th:field="*{password}" required>
+                <p th:errors="*{password}" class="text-danger"
+                   th:if="${#fields.hasErrors('password')}">
+                </p>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update User</button>
+        </form>
+
+        <form th:action="@{/user/deleteUser/{userId}(userId=${userId})}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this account?');">Delete</button>
+        </form>
+        <a href="/home" class="btn btn-secondary">Cancel</a>
+
+    </div>
+</div>
+
+</body>
+</html>

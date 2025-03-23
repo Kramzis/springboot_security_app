@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface UserService extends UserDetailsService {
+    User getUserById(Integer userId);
     void saveUser(UserDTO userDto);
+    User updateUser(Integer userId, User updatedUser);
+    User deleteUserById(Integer userId);
     User getCurrentUser();
 }

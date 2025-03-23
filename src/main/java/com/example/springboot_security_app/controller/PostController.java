@@ -15,8 +15,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
-
-
 @Controller
 @RequestMapping("/home")
 public class PostController {
@@ -31,8 +29,10 @@ public class PostController {
 
     @GetMapping()
     public String getPosts(Model model) {
+        User user = userService.getCurrentUser();
         List<Post> listOfPosts = postService.getAllActivePosts();
         model.addAttribute("posts", listOfPosts);
+        model.addAttribute("user", user);
         return "home";
     }
 
@@ -65,7 +65,7 @@ public class PostController {
 
 
     @GetMapping("/editPost/{postId}")
-    public String showCreatePostForm(@PathVariable Integer postId, Model model) {
+    public String showEditPostForm(@PathVariable Integer postId, Model model) {
         Post post = postService.getPostById(postId);
         ModelMapper modelMapper = new ModelMapper();
         PostDTO postDTO = modelMapper.map(post, PostDTO.class);

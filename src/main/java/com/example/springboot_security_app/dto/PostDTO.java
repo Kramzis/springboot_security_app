@@ -18,6 +18,7 @@ public class PostDTO {
     private User createdBy;
 
     public PostDTO() {}
+    public PostDTO(String title, String content, LocalDate createdAt, User createdBy) {}
 
     public String getTitle() { return title; }
 

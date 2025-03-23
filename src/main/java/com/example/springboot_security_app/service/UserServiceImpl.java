@@ -2,21 +2,24 @@ package com.example.springboot_security_app.service;
 
 
 import com.example.springboot_security_app.dto.UserDTO;
+import com.example.springboot_security_app.entity.Post;
 import com.example.springboot_security_app.entity.Role;
 import com.example.springboot_security_app.entity.User;
+import com.example.springboot_security_app.repository.PostRepository;
 import com.example.springboot_security_app.repository.UserRepository;
 import com.example.springboot_security_app.service.base.RoleService;
 import com.example.springboot_security_app.service.base.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -29,7 +32,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private final PasswordEncoder passwordEncoder;
-
+    @Autowired
+    private PostRepository postRepository;
 
     public UserServiceImpl(UserRepository userRepository, RoleService roleServiceImpl, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -37,6 +41,15 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Override
+    public User getUserById(Integer id) {
+        User user = userRepository.getUserById(id);
+        if(user.getDeletedAt() != null){
+            return null;
+        } else {
+            return user;
+        }
+    }
 
     @Override
     public void saveUser(UserDTO userDTO) {
@@ -52,6 +65,29 @@ public class UserServiceImpl implements UserService {
         user.setRoles(Arrays.asList(role));
 
         userRepository.save(user);
+    }
+
+    @Override
+    public User updateUser(Integer userId, User updatedUser) {
+        User user = userRepository.findById(userId).orElse(null);
+        if(user != null) {
+            user.setUsername(updatedUser.getUsername());
+            user.setEmail(updatedUser.getEmail());
+            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+            return userRepository.save(user);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public User deleteUserById(Integer userId){
+        User user = userRepository.findById(userId).orElse(null);
+        user.setDeletedAt(LocalDate.now());
+        for(Post post : user.getPosts()){
+            post.setDeletedAt(LocalDate.now());
+        }
+        return userRepository.save(user);
     }
 
     @Override
@@ -75,15 +111,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail ( email );
-        if(user == null){
-            throw new UsernameNotFoundException ( "Invalid username or password" );
+        if(user == null || user.getDeletedAt() != null){
+            throw new UsernameNotFoundException ( "User not found" );
         }
+
         return new org.springframework.security.core.userdetails.User(user.getEmail (),user.getPassword (), mapRolesToAuthorities ( user.getRoles () ));
     }
 
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles){
-        return roles.stream ().map ( role -> new SimpleGrantedAuthority ( role.getName () ) ).collect ( Collectors.toList (  ) );
+        return roles.stream ().map ( role -> new SimpleGrantedAuthority( role.getName () ) ).collect ( Collectors.toList (  ) );
     }
+
 }
 

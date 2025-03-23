@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 
 public class UserDTO {
+    private Integer userId;
 
     @NotBlank(message = "Username is required")
     private String username;
@@ -17,6 +18,14 @@ public class UserDTO {
     @Size(min = 6, message = "Password must be at least 6 characters")
 
     private String password;
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     public String getUsername() {
         return username;

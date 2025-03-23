@@ -2,6 +2,7 @@ package com.example.springboot_security_app.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,12 +23,18 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = true)
+    private LocalDate deletedAt = null;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @JoinTable(
             name="users_roles",
             joinColumns={@JoinColumn(name="user_id", referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="role_id", referencedColumnName="id")})
     private List<Role> roles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> posts = new ArrayList<>();
 
     public User() {}
 
@@ -38,6 +45,10 @@ public class User {
         this.roles = roles;
         this.password = password;
     }
+
+    public LocalDate getDeletedAt() { return deletedAt; }
+
+    public void setDeletedAt(LocalDate deletedAt) { this.deletedAt = deletedAt; }
 
     public List<Role> getRoles() { return roles; }
 
@@ -59,5 +70,8 @@ public class User {
 
     public void setPassword(String password) { this.password = password; }
 
+    public List<Post> getPosts() {
+        return posts;
+    }
 }
 
