@@ -1,15 +1,12 @@
 package com.example.springboot_security_app.service;
 
-
 import com.example.springboot_security_app.dto.UserDTO;
 import com.example.springboot_security_app.entity.Post;
 import com.example.springboot_security_app.entity.Role;
 import com.example.springboot_security_app.entity.User;
-import com.example.springboot_security_app.repository.PostRepository;
 import com.example.springboot_security_app.repository.UserRepository;
 import com.example.springboot_security_app.service.base.RoleService;
 import com.example.springboot_security_app.service.base.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,17 +26,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleService roleServiceImpl;
-
-    @Autowired
     private final PasswordEncoder passwordEncoder;
-    @Autowired
-    private PostRepository postRepository;
 
     public UserServiceImpl(UserRepository userRepository, RoleService roleServiceImpl, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleServiceImpl = roleServiceImpl;
-        this.passwordEncoder = passwordEncoder;
-    }
+        this.passwordEncoder = passwordEncoder;}
 
     @Override
     public User getUserById(Integer id) {
@@ -68,26 +60,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(Integer userId, User updatedUser) {
+    public void updateUser(Integer userId, User updatedUser) {
         User user = userRepository.findById(userId).orElse(null);
         if(user != null) {
             user.setUsername(updatedUser.getUsername());
             user.setEmail(updatedUser.getEmail());
             user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-            return userRepository.save(user);
+            userRepository.save(user);
         } else {
-            return null;
+            throw new IllegalArgumentException("User not found");
         }
     }
 
     @Override
-    public User deleteUserById(Integer userId){
+    public void deleteUserById(Integer userId){
         User user = userRepository.findById(userId).orElse(null);
-        user.setDeletedAt(LocalDate.now());
-        for(Post post : user.getPosts()){
-            post.setDeletedAt(LocalDate.now());
+        if(user != null) {
+            user.setDeletedAt(LocalDate.now());
+            for(Post post : user.getPosts()){
+                post.setDeletedAt(LocalDate.now());
+            }
+            userRepository.save(user);
+        } else {
+            throw new IllegalArgumentException("User not found");
         }
-        return userRepository.save(user);
     }
 
     @Override
@@ -117,7 +113,6 @@ public class UserServiceImpl implements UserService {
 
         return new org.springframework.security.core.userdetails.User(user.getEmail (),user.getPassword (), mapRolesToAuthorities ( user.getRoles () ));
     }
-
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles){
         return roles.stream ().map ( role -> new SimpleGrantedAuthority( role.getName () ) ).collect ( Collectors.toList (  ) );

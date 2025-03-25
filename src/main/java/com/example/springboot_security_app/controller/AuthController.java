@@ -18,7 +18,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/")
 public class AuthController {
-
     private final UserService userService;
 
     public AuthController(UserService userService) {

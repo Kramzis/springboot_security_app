@@ -1,5 +1,7 @@
 package com.example.springboot_security_app.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -21,12 +23,14 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
 
     @Column(nullable = true)
     private LocalDate deletedAt = null;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    @JsonIgnore
     @JoinTable(
             name="users_roles",
             joinColumns={@JoinColumn(name="user_id", referencedColumnName="id")},
@@ -34,6 +38,7 @@ public class User {
     private List<Role> roles = new ArrayList<>();
 
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private List<Post> posts = new ArrayList<>();
 
     public User() {}

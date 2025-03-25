@@ -1,5 +1,6 @@
 package com.example.springboot_security_app.service;
 
+import com.example.springboot_security_app.dto.PostDTO;
 import com.example.springboot_security_app.entity.Post;
 import com.example.springboot_security_app.repository.PostRepository;
 import com.example.springboot_security_app.repository.UserRepository;
@@ -30,34 +31,40 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post createPost(Post post){
-        return postRepository.save(post);
+    public void createPost(Post post){
+        postRepository.save(post);
     }
 
     @Override
-    public Post updatePost(Integer postId, Post newPost) {
+    public void updatePost(Integer postId, Post newPost) {
         Post post = postRepository.findPostById(postId);
         if(post != null){
             post.setTitle(newPost.getTitle());
             post.setContent(newPost.getContent());
             post.setCreatedAt(LocalDate.now());
 
-            return postRepository.save(post);
+            postRepository.save(post);
         } else {
-            return null;
+            throw new IllegalStateException("Post not found");
         }
     }
 
     @Override
-    public Post deletePostById(Integer postId) {
+    public void deletePostById(Integer postId) {
         Post post = postRepository.findPostById(postId);
         post.setDeletedAt(LocalDate.now());
 
-        return postRepository.save(post);
+        postRepository.save(post);
     }
 
     @Override
+
     public List<Post> getAllActivePosts() {
         return postRepository.findByDeletedAtIsNull();
+    }
+
+    @Override
+    public List<PostDTO> getAllPosts(){
+        return postRepository.findPostsByDeletedAtIsNull();
     }
 }

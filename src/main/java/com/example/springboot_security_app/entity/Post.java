@@ -1,6 +1,8 @@
 package com.example.springboot_security_app.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 
 @Entity
@@ -17,6 +19,7 @@ public class Post {
     private String content;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "user_id")
     private User createdBy;
 

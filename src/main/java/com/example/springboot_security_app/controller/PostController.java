@@ -30,7 +30,7 @@ public class PostController {
     @GetMapping()
     public String getPosts(Model model) {
         User user = userService.getCurrentUser();
-        List<Post> listOfPosts = postService.getAllActivePosts();
+        List<PostDTO> listOfPosts = postService.getAllPosts();
         model.addAttribute("posts", listOfPosts);
         model.addAttribute("user", user);
         return "home";
@@ -45,21 +45,17 @@ public class PostController {
     @PostMapping("/newPost")
     public String createPost(@Valid PostDTO postDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            return "newPost";
+            return "add_post";
         }
 
         ModelMapper modelMapper = new ModelMapper();
-
         Post post = modelMapper.map(postDTO, Post.class);
 
         User user = userService.getCurrentUser();
-
         post.setCreatedBy(user);
-
         postService.createPost(post);
 
         redirectAttributes.addFlashAttribute("message", "Post added successfully!");
-
         return "redirect:/home";
     }
 

@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout.html}">
 <head>
-    <title>Security Spring Boot Application</title></head>
+    <title>Security Spring Boot Application Error</title>
+</head>
 <body>
 
 <div class="container" layout:fragment="content">
-    <h1>Home Page</h1>
-    <p>Welcome to our website!</p>
-
+    <h1>403 - Forbidden</h1>
+    <p th:text="${errorMessage}"></p>
+    <a href="/home">Back to Home</a>
 </div>
 </body>
 </html>

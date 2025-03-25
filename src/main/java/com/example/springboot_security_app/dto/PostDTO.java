@@ -18,7 +18,12 @@ public class PostDTO {
     private User createdBy;
 
     public PostDTO() {}
-    public PostDTO(String title, String content, LocalDate createdAt, User createdBy) {}
+    public PostDTO(String title, String content, LocalDate createdAt, User createdBy) {
+        this.title = title;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.createdBy = createdBy;
+    }
 
     public String getTitle() { return title; }
 
